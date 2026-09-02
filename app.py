@@ -8,9 +8,14 @@ Scss(app)
 
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///tasks_database.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
+
 # initialize the app with the extension
 db = SQLAlchemy(app)
 
+# Create Database Context
+with app.app_context():
+    db.create_all()
 
 # Creating a Model
 class MyTask(db.Model):
@@ -69,7 +74,5 @@ def edit(id:int):
         return render_template('edit.html',task_to_be_edited=task_to_be_edited)
 
 
-if __name__ in "__main__":
-    with app.app_context():
-        db.create_all()
+if __name__ == "__main__":
     app.run(debug=True)
