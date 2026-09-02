@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, request
 from flask_scss import Scss
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -22,10 +22,26 @@ class MyTask(db.Model):
     def __repr__(self):
         return f"Task {self.id}"
     
-
-@app.route('/')
+# HOME PAGE
+@app.route('/', methods=["POST", "GET"])
 def index():
-    return render_template('index.html')
+    # ADD A TASK
+    if request.method == "POST":
+        current_task = request.form['content']
+        new_task = MyTask(content=current_task)
+        try:
+            db.session.add(new_task)
+            db.session.commit()
+            return redirect("/")
+        except Exception as e:
+            print(f"Error: {e}")
+            return f"Error: {e}"
+    
+    # See all Current Tasks
+    else:
+        tasks = MyTask.query.order_by(MyTask.created).all()
+        return render_template('index.html', tasks=tasks)
+    
 
 if __name__ in "__main__":
     with app.app_context():
