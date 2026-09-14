@@ -58,7 +58,7 @@ def delete(id:int):
         return redirect("/")
     except Exception as e:
         return f"ERROR: {e}"
-    
+
 # Edit an Item
 @app.route("/update/<int:id>", methods=["POST", "GET"])
 def edit(id:int):
